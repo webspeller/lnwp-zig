@@ -1,0 +1,11 @@
+.zig-cache/
+.zig-cache-test/
+.zig-global-cache*/
+zig-cache/
+zig-out/
+*.o
+*.a
+*.dylib
+*.so
+*.dll
+*.exe

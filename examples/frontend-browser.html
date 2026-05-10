@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>LNWP API Browser Example</title>
+</head>
+<body>
+  <button id="decode">Decode PING Frame</button>
+  <pre id="out"></pre>
+  <script type="module">
+    import { LnwpApiClient } from "../clients/javascript/lnwp-client.js";
+
+    const out = document.querySelector("#out");
+    const client = new LnwpApiClient("http://127.0.0.1:8080");
+
+    document.querySelector("#decode").addEventListener("click", async () => {
+      const result = await client.decodeFrame({
+        hex: "060000080000000000000001"
+      });
+      out.textContent = JSON.stringify(result, null, 2);
+    });
+  </script>
+</body>
+</html>

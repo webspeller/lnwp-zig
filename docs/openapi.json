@@ -1,0 +1,253 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LNWP API",
+    "version": "0.1.0",
+    "description": "REST API for inspecting, encoding, decoding, and validating Live Native Wire Protocol v5.0 frames."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/v1/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        }
+      }
+    },
+    "/v1/version": {
+      "get": {
+        "summary": "Protocol version and constants",
+        "responses": {
+          "200": {
+            "description": "LNWP protocol metadata"
+          }
+        }
+      }
+    },
+    "/v1/opcodes": {
+      "get": {
+        "summary": "Opcode registry",
+        "responses": {
+          "200": {
+            "description": "LNWP v5.0 opcode table"
+          }
+        }
+      }
+    },
+    "/v1/frames/decode": {
+      "post": {
+        "summary": "Decode a hex-encoded LNWP frame",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecodeFrameRequest"
+              },
+              "examples": {
+                "ping": {
+                  "value": {
+                    "hex": "060000080000000000000001"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Decoded frame"
+          }
+        }
+      }
+    },
+    "/v1/frames/encode": {
+      "post": {
+        "summary": "Encode a LNWP frame",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncodeFrameRequest"
+              },
+              "examples": {
+                "ping": {
+                  "value": {
+                    "opcode": "ping",
+                    "flags": 0,
+                    "body_hex": "0000000000000001"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Encoded frame hex"
+          }
+        }
+      }
+    },
+    "/v1/checksums/crc32c": {
+      "post": {
+        "summary": "Compute CRC32c",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HexRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CRC32c checksum"
+          }
+        }
+      }
+    },
+    "/v1/security/snapshot-hash": {
+      "post": {
+        "summary": "Compute RESUME_FROM_SNAPSHOT HMAC-SHA256 hash",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SnapshotHashRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Snapshot hash"
+          }
+        }
+      }
+    },
+    "/v1/security/batch-mac": {
+      "post": {
+        "summary": "Compute BATCH_PATCH HMAC-SHA256 tag",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchMacRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Batch MAC tag"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DecodeFrameRequest": {
+        "type": "object",
+        "required": [
+          "hex"
+        ],
+        "properties": {
+          "hex": {
+            "type": "string",
+            "description": "Full LNWP frame encoded as hexadecimal."
+          }
+        }
+      },
+      "EncodeFrameRequest": {
+        "type": "object",
+        "required": [
+          "opcode"
+        ],
+        "properties": {
+          "opcode": {
+            "type": "string",
+            "description": "Opcode name such as ping or hex byte such as 0x06."
+          },
+          "flags": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255,
+            "default": 0
+          },
+          "body_hex": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      },
+      "HexRequest": {
+        "type": "object",
+        "required": [
+          "hex"
+        ],
+        "properties": {
+          "hex": {
+            "type": "string"
+          }
+        }
+      },
+      "SnapshotHashRequest": {
+        "type": "object",
+        "required": [
+          "key_hex",
+          "snapshot_seq",
+          "tree_root_fingerprint_hex"
+        ],
+        "properties": {
+          "key_hex": {
+            "type": "string"
+          },
+          "snapshot_seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tree_root_fingerprint_hex": {
+            "type": "string",
+            "description": "8-byte big-endian fingerprint hex."
+          }
+        }
+      },
+      "BatchMacRequest": {
+        "type": "object",
+        "required": [
+          "key_hex",
+          "batch_seq",
+          "payload_hex"
+        ],
+        "properties": {
+          "key_hex": {
+            "type": "string"
+          },
+          "batch_seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "payload_hex": {
+            "type": "string",
+            "description": "BATCH_PATCH body bytes after the batch_seq field, encoded as hex."
+          }
+        }
+      }
+    }
+  }
+}
