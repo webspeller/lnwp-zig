@@ -1,4 +1,4 @@
-# LNWP (Live Native Web Protocol) Zig
+# LNWP (Live Native Wire Protocol) Zig
 
 This is a self-contained Zig implementation project for the LNWP v5.0 protocol described in `LNWP-v5.0-Complete-Specification.docx`.
 
