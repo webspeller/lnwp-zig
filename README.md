@@ -2,6 +2,8 @@
 
 This is a self-contained Zig implementation project for the LNWP v5.0 protocol described in `LNWP-v5.0-Complete-Specification.docx`.
 
+Why does it exist? Because I wanted to connect any mobile frontend (whether it is native apps, flutter, react native or cordova/capacitor/PWAs etc) with any backend logic without worrying about the compliance. This is an attempt to be compliant to almost all the global compliance. It includes the DB encryption layer (DB will be installed by the user) too while being very small in size and top-notch in functionality.
+
 The repository focuses on the parts of the specification that are concrete at the wire and SDK boundary:
 
 - 4-byte v5 frame header, flag validation, plugin opcode range, and reserved opcode handling
@@ -13,7 +15,7 @@ The repository focuses on the parts of the specification that are concrete at th
 - REST API endpoints for frontend/backend access, with OpenAPI and JavaScript/TypeScript clients
 - Unit tests that map to the core conformance areas in TS-01 through TS-07 plus selected security utilities
 
-## Layout
+## Layouttra
 
 ```text
 src/
